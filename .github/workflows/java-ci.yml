@@ -33,7 +33,7 @@ jobs:
           java -cp out headfirst.ch01.MyFirstApp
           java -cp out headfirst.ch01.DooBee
           java -cp out headfirst.ch01.Loopy
-          # Bab 2 (GuessGame) -> jalankan sekali; bisa berakhir cepat
+          # Bab 2
           java -cp out headfirst.ch02.GameLauncher
           # Bab 3
           java -cp out headfirst.ch03.PrimitiveRefDemo
@@ -59,36 +59,36 @@ jobs:
           # Bab 17 (build JAR and run)
           (cd out && jar cfe ../hello.jar headfirst.ch17.HelloJar headfirst/ch17/HelloJar.class)
           java -jar hello.jar
-- name: Compile tests
-  run: |
-    mkdir -p out
-    find src/headfirst/tests -name "*.java" > test_sources.txt
-    javac -encoding UTF-8 -cp out -d out @test_sources.txt
 
-- name: Run full chapter tests (headless where needed)
-  env:
-    JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
-  run: |
-    set -eux
-    java -cp out headfirst.tests.TestCh01
-    java -cp out headfirst.tests.TestCh02
-    java -cp out headfirst.tests.TestCh03
-    java -cp out headfirst.tests.TestCh04
-    java -cp out headfirst.tests.TestCh05_06
-    java -cp out headfirst.tests.TestCh07
-    java -cp out headfirst.tests.TestCh08
-    java -cp out headfirst.tests.TestCh09
-    java -cp out headfirst.tests.TestCh10
-    java -cp out headfirst.tests.TestCh11
-    java -cp out headfirst.tests.TestCh12
-    java -cp out headfirst.tests.TestCh13
-    java -cp out headfirst.tests.TestCh14
-    # Networking (server/client) & RMI
-    timeout 10s java -cp out headfirst.tests.TestCh15 || (echo 'Ch15 failed' && exit 1)
-    timeout 10s java -cp out headfirst.tests.TestCh18 || (echo 'Ch18 failed' && exit 1)
-    # Packaging (jar)
-    java -cp out headfirst.tests.TestCh17
+      - name: Compile tests
+        run: |
+          mkdir -p out
+          find src/headfirst/tests -name "*.java" > test_sources.txt
+          javac -encoding UTF-8 -cp out -d out @test_sources.txt
 
+      - name: Run full chapter tests (headless where needed)
+        env:
+          JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
+        run: |
+          set -eux
+          java -cp out headfirst.tests.TestCh01
+          java -cp out headfirst.tests.TestCh02
+          java -cp out headfirst.tests.TestCh03
+          java -cp out headfirst.tests.TestCh04
+          java -cp out headfirst.tests.TestCh05_06
+          java -cp out headfirst.tests.TestCh07
+          java -cp out headfirst.tests.TestCh08
+          java -cp out headfirst.tests.TestCh09
+          java -cp out headfirst.tests.TestCh10
+          java -cp out headfirst.tests.TestCh11
+          java -cp out headfirst.tests.TestCh12
+          java -cp out headfirst.tests.TestCh13
+          java -cp out headfirst.tests.TestCh14
+          # Networking (server/client) & RMI pakai timeout biar gak ngegantung
+          timeout 10s java -cp out headfirst.tests.TestCh15 || (echo 'Ch15 failed' && exit 1)
+          timeout 10s java -cp out headfirst.tests.TestCh18 || (echo 'Ch18 failed' && exit 1)
+          # Packaging (jar)
+          java -cp out headfirst.tests.TestCh17
 
       - name: Archive compiled classes & jar
         uses: actions/upload-artifact@v4
