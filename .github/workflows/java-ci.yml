@@ -72,8 +72,8 @@ jobs:
           java -cp out headfirst.tests.TestCh14
           # Networking (server/client) diberi timeout agar tidak hang
           timeout 10s java -cp out headfirst.tests.TestCh15
-          # RMI: tanpa timeout (test cepat & stabil)
-          java -cp out headfirst.tests.TestCh18
+          # RMI (Bab 18) sekarang sudah auto-exit, tetap jaga dengan timeout
+          timeout 10s java -cp out headfirst.tests.TestCh18
           # Packaging (jar)
           java -cp out headfirst.tests.TestCh17
 
