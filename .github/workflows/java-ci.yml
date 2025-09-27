@@ -16,9 +16,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: 'temurin'
           java-version: '17'
-          cache: 'none'
 
       - name: Compile (javac -> out/)
         run: |
@@ -29,34 +28,22 @@ jobs:
       - name: Smoke tests (console-only demos)
         run: |
           set -eux
-          # Bab 1
           java -cp out headfirst.ch01.MyFirstApp
           java -cp out headfirst.ch01.DooBee
           java -cp out headfirst.ch01.Loopy
-          # Bab 2
           java -cp out headfirst.ch02.GameLauncher
-          # Bab 3
           java -cp out headfirst.ch03.PrimitiveRefDemo
           java -cp out headfirst.ch03.ArrayIntro
           java -cp out headfirst.ch03.DogTestDrive
-          # Bab 4
           java -cp out headfirst.ch04.DogEncapTest
           java -cp out headfirst.ch04.PassByValue
-          # Bab 6
           java -cp out headfirst.ch06.ArrayListDog
-          # Bab 7
           java -cp out headfirst.ch07.InheritanceDemo
-          # Bab 8
           java -cp out headfirst.ch08.PolymorphismDemo
-          # Bab 9
           java -cp out headfirst.ch09.ConstructorDemo
-          # Bab 10
           java -cp out headfirst.ch10.NumberFormatDemo
-          # Bab 11
           java -cp out headfirst.ch11.ExceptionDemo
-          # Bab 16
           java -cp out headfirst.ch16.CollectionsDemo
-          # Bab 17 (build JAR and run)
           (cd out && jar cfe ../hello.jar headfirst.ch17.HelloJar headfirst/ch17/HelloJar.class)
           java -jar hello.jar
 
@@ -84,10 +71,8 @@ jobs:
           java -cp out headfirst.tests.TestCh12
           java -cp out headfirst.tests.TestCh13
           java -cp out headfirst.tests.TestCh14
-          # Networking (server/client) & RMI pakai timeout biar gak ngegantung
           timeout 10s java -cp out headfirst.tests.TestCh15 || (echo 'Ch15 failed' && exit 1)
           timeout 10s java -cp out headfirst.tests.TestCh18 || (echo 'Ch18 failed' && exit 1)
-          # Packaging (jar)
           java -cp out headfirst.tests.TestCh17
 
       - name: Archive compiled classes & jar
