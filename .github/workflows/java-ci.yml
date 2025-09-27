@@ -19,10 +19,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Compile (javac -> out/)
+      - name: Compile (javac -> out/)  # compile source utama saja (tanpa tests)
         run: |
           mkdir -p out
-          find src -name "*.java" > sources.txt
+          find src -name "*.java" -not -path "src/headfirst/tests/*" > sources.txt
           javac -encoding UTF-8 -d out @sources.txt
 
       - name: Smoke tests (console-only demos)
@@ -49,7 +49,6 @@ jobs:
 
       - name: Compile tests
         run: |
-          mkdir -p out
           find src/headfirst/tests -name "*.java" > test_sources.txt
           javac -encoding UTF-8 -cp out -d out @test_sources.txt
 
@@ -71,8 +70,11 @@ jobs:
           java -cp out headfirst.tests.TestCh12
           java -cp out headfirst.tests.TestCh13
           java -cp out headfirst.tests.TestCh14
-          timeout 10s java -cp out headfirst.tests.TestCh15 || (echo 'Ch15 failed' && exit 1)
-          timeout 10s java -cp out headfirst.tests.TestCh18 || (echo 'Ch18 failed' && exit 1)
+          # Networking (server/client) diberi timeout agar tidak hang
+          timeout 10s java -cp out headfirst.tests.TestCh15
+          # RMI: tanpa timeout (test cepat & stabil)
+          java -cp out headfirst.tests.TestCh18
+          # Packaging (jar)
           java -cp out headfirst.tests.TestCh17
 
       - name: Archive compiled classes & jar
