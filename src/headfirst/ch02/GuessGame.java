@@ -27,9 +27,10 @@ public class GuessGame { // Mendefinisikan kelas GuessGame
             p2.guess(); // Pemain 2 menebak
             p3.guess(); // Pemain 3 menebak
 
-            int guessp1 = p1.number; // Ambil tebakan p1
-            int guessp2 = p2.number; // Ambil tebakan p2
-            int guessp3 = p3.number; // Ambil tebakan p3
+            // >>> GUNAKAN GETTER, JANGAN AKSES FIELD LANGSUNG
+            int guessp1 = p1.getNumber(); // Ambil tebakan p1
+            int guessp2 = p2.getNumber(); // Ambil tebakan p2
+            int guessp3 = p3.getNumber(); // Ambil tebakan p3
 
             // Bandingkan masing-masing tebakan dengan target
             if (guessp1 == targetNumber) { p1isRight = true; }
@@ -46,7 +47,7 @@ public class GuessGame { // Mendefinisikan kelas GuessGame
                 break; // Keluar dari loop while(true)
             } else {
                 // Jika belum ada yang benar, lanjutkan loop
-                System.out.println("Players will have to try again."); // <— perbaikan: 1 baris saja
+                System.out.println("Players will have to try again.");
                 System.out.println(); // baris kosong sebagai pemisah
             }
         } // Akhir while
