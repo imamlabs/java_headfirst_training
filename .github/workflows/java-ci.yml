@@ -1,0 +1,99 @@
+name: Java CI (Head First Java Examples)
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'none'
+
+      - name: Compile (javac -> out/)
+        run: |
+          mkdir -p out
+          find src -name "*.java" > sources.txt
+          javac -encoding UTF-8 -d out @sources.txt
+
+      - name: Smoke tests (console-only demos)
+        run: |
+          set -eux
+          # Bab 1
+          java -cp out headfirst.ch01.MyFirstApp
+          java -cp out headfirst.ch01.DooBee
+          java -cp out headfirst.ch01.Loopy
+          # Bab 2 (GuessGame) -> jalankan sekali; bisa berakhir cepat
+          java -cp out headfirst.ch02.GameLauncher
+          # Bab 3
+          java -cp out headfirst.ch03.PrimitiveRefDemo
+          java -cp out headfirst.ch03.ArrayIntro
+          java -cp out headfirst.ch03.DogTestDrive
+          # Bab 4
+          java -cp out headfirst.ch04.DogEncapTest
+          java -cp out headfirst.ch04.PassByValue
+          # Bab 6
+          java -cp out headfirst.ch06.ArrayListDog
+          # Bab 7
+          java -cp out headfirst.ch07.InheritanceDemo
+          # Bab 8
+          java -cp out headfirst.ch08.PolymorphismDemo
+          # Bab 9
+          java -cp out headfirst.ch09.ConstructorDemo
+          # Bab 10
+          java -cp out headfirst.ch10.NumberFormatDemo
+          # Bab 11
+          java -cp out headfirst.ch11.ExceptionDemo
+          # Bab 16
+          java -cp out headfirst.ch16.CollectionsDemo
+          # Bab 17 (build JAR and run)
+          (cd out && jar cfe ../hello.jar headfirst.ch17.HelloJar headfirst/ch17/HelloJar.class)
+          java -jar hello.jar
+- name: Compile tests
+  run: |
+    mkdir -p out
+    find src/headfirst/tests -name "*.java" > test_sources.txt
+    javac -encoding UTF-8 -cp out -d out @test_sources.txt
+
+- name: Run full chapter tests (headless where needed)
+  env:
+    JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
+  run: |
+    set -eux
+    java -cp out headfirst.tests.TestCh01
+    java -cp out headfirst.tests.TestCh02
+    java -cp out headfirst.tests.TestCh03
+    java -cp out headfirst.tests.TestCh04
+    java -cp out headfirst.tests.TestCh05_06
+    java -cp out headfirst.tests.TestCh07
+    java -cp out headfirst.tests.TestCh08
+    java -cp out headfirst.tests.TestCh09
+    java -cp out headfirst.tests.TestCh10
+    java -cp out headfirst.tests.TestCh11
+    java -cp out headfirst.tests.TestCh12
+    java -cp out headfirst.tests.TestCh13
+    java -cp out headfirst.tests.TestCh14
+    # Networking (server/client) & RMI
+    timeout 10s java -cp out headfirst.tests.TestCh15 || (echo 'Ch15 failed' && exit 1)
+    timeout 10s java -cp out headfirst.tests.TestCh18 || (echo 'Ch18 failed' && exit 1)
+    # Packaging (jar)
+    java -cp out headfirst.tests.TestCh17
+
+
+      - name: Archive compiled classes & jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-classes-and-jar
+          path: |
+            out/**
+            hello.jar
